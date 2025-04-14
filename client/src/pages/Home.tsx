@@ -134,9 +134,19 @@ export default function Home() {
           {/* Tech grid background */}
           <div className="fixed inset-0 bg-tech-grid opacity-20 z-[-1]"></div>
           
-          {/* Animated scanning line */}
-          <div className="fixed inset-x-0 h-px bg-blue-500/40 z-[-1] animate-scanning-line" 
-            style={{boxShadow: '0 0 8px rgba(0, 150, 255, 0.5)'}}></div>
+          {/* Animated scanning lines */}
+          <div className="fixed inset-x-0 h-0.5 bg-blue-500/40 z-[-1]" 
+            style={{
+              boxShadow: '0 0 8px rgba(0, 150, 255, 0.5)',
+              animation: 'scanning-line 2.5s ease-in-out infinite alternate',
+              top: '30%'
+            }}></div>
+          <div className="fixed inset-x-0 h-0.5 bg-cyan-500/40 z-[-1]" 
+            style={{
+              boxShadow: '0 0 8px rgba(0, 200, 255, 0.5)',
+              animation: 'scanning-line 3.5s ease-in-out infinite alternate-reverse',
+              top: '60%'
+            }}></div>
           
           {/* Glowing points */}
           <div className="fixed top-1/4 left-1/4 w-2 h-2 rounded-full bg-blue-500/60 animate-pulse-slow z-[-1]"

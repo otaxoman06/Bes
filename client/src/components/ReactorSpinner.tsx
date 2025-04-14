@@ -138,7 +138,7 @@ const ReactorSpinner = () => {
           <div className="absolute inset-2 rounded-full overflow-hidden">
             {/* Inner core glow */}
             <div 
-              className="absolute inset-0 rounded-full reactor-core animate-pulse-fast"
+              className="absolute inset-0 rounded-full reactor-core animate-ironman-pulse"
               style={{ 
                 filter: `blur(1px) brightness(${1 + energy/80})`,
                 boxShadow: `0 0 ${10 + energy/5}px rgba(0, 150, 255, 0.8), 
