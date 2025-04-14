@@ -119,18 +119,65 @@ const ReactorSpinner = () => {
           </div>
         </div>
         
-        {/* Spinning rings */}
+        {/* Spinning rings - improved with multiple layers and designs */}
         <div 
           className={`absolute inset-0 reactor-ring rounded-full animate-${getSpinClass('spin')}`}
+          style={{
+            boxShadow: '0 0 20px rgba(0, 150, 255, 0.3), 0 0 10px rgba(0, 200, 255, 0.2) inset',
+            opacity: energy > 50 ? 0.9 : 0.7
+          }}
         />
         
         <div 
           className={`absolute inset-6 reactor-ring-inner rounded-full animate-${getSpinClass('spin-reverse')}`}
+          style={{
+            boxShadow: '0 0 15px rgba(0, 150, 255, 0.3) inset',
+            opacity: energy > 30 ? 0.9 : 0.7
+          }}
         />
         
         <div 
           className={`absolute inset-12 reactor-ring-core rounded-full animate-${getSpinClass('spin-medium')}`}
+          style={{
+            boxShadow: '0 0 10px rgba(0, 150, 255, 0.3)',
+            opacity: energy > 20 ? 0.9 : 0.7
+          }}
         />
+        
+        {/* Additional rotating geometric elements */}
+        <div 
+          className={`absolute inset-3 rounded-full overflow-hidden animate-${getSpinClass('spin-slow')}`}
+        >
+          <div className="w-full h-full border-2 border-dashed border-blue-500/40"
+               style={{
+                 clipPath: 'polygon(50% 0%, 80% 10%, 100% 35%, 100% 70%, 80% 90%, 50% 100%, 20% 90%, 0% 70%, 0% 35%, 20% 10%)',
+                 transform: 'rotate(45deg)'
+               }}></div>
+        </div>
+        
+        <div 
+          className={`absolute inset-9 rounded-full overflow-hidden animate-${getSpinClass('spin-reverse-fast')}`}
+        >
+          <div className="w-full h-full border border-dotted border-cyan-400/50"
+               style={{
+                 clipPath: 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)',
+                 transform: 'rotate(22.5deg)'
+               }}></div>
+        </div>
+        
+        {/* Tech circuitry pattern - only visible at higher energy levels */}
+        {energy > 40 && (
+          <div className="absolute inset-6 rounded-full overflow-hidden opacity-40">
+            <div 
+              className="absolute inset-0 border border-cyan-400/60"
+              style={{ 
+                backgroundImage: 'radial-gradient(circle, rgba(0,200,255,0.1) 1px, transparent 1px), linear-gradient(rgba(0,150,255,0.1) 1px, transparent 1px)',
+                backgroundSize: '10px 10px',
+                animation: `spin ${5 - energy/25}s linear infinite`
+              }}
+            ></div>
+          </div>
+        )}
         
         {/* Core reactor with glowing effect */}
         <div className="absolute inset-20 rounded-full bg-black overflow-hidden flex items-center justify-center">
