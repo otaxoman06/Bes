@@ -1,10 +1,11 @@
 import { useCallback, useRef, useEffect } from 'react';
 
-// Sound URLs - menggunakan CDN lain yang lebih reliable
-const HOVER_SOUND_URL = 'https://assets.mixkit.co/sfx/preview/mixkit-interface-click-tone-2568.mp3';
-const CLICK_SOUND_URL = 'https://assets.mixkit.co/sfx/preview/mixkit-game-click-1114.mp3';
-const STARTUP_SOUND_URL = 'https://assets.mixkit.co/sfx/preview/mixkit-tech-break-ui-deploy-2574.mp3';
-const BACKGROUND_SOUND_URL = 'https://assets.mixkit.co/sfx/preview/mixkit-futuristic-technology-ambience-2516.mp3';
+// Gunakan embedded base64 audio untuk menghindari masalah CORS/network
+// Suara kecil dengan format data URI untuk audio
+const HOVER_SOUND_URL = 'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tAwAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAAFWADd3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d//////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAUDgAAAAAAAAVgD0l7IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//tAxAAACXCZIU0MpMEyiymkhiTBQAE1/MwAkfQ5WDPGBQ+WkXCX4jKjQcHCzDUhMDAfMDRcOoYGBgkkR2bK9cxPZHjQULqR/+LsP8W/+i3+pnqfd5//vqCj/wHznAQkAzABNATBhgAkMO+TP9CzGqrI6Y2qrLlQsyxbvKztVEDzPJF8shRZuIj7v/9Gs7h5fvKUz0GdZ2i9hBuqzV2zsFqnrMZAiwC6zAFoJbP3MzAZMAthpTCyM4YE0TAwYMAwEAhjSRZpK8YQNXJG//tCxA4B1sSTGw9gAEGKGYNhg4FhjWwXLCRqQHlhJk7XtNIQGxhVGSCHHBz0fMeABWamkoHp85Vk2Yx5gHAW/S/+aBAi+QJcWPTjgJPCBSVTnpWFq1Xx0sMrX9e3TsXTDYFCwVxO/09a3hKI/pam+sAcBwJINnrWxcqOSl/oWuZ5TJvW5JuJPKa1rWta1tbpv0LXWcpI+PkGUipNa7NKTRBRYtXJ+gzr0vSn1NiJTXNalrdN1K9LSl5ZM8xsUDMYFBTGBQexbAAAAA==';
+const CLICK_SOUND_URL = 'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tAwAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAAFHADMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzM//////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAUBgAAAAAAAARwCEiXTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//sQxAADwAABpAAAACAAADSAAAAETEFNFMy45OS41VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV';
+const STARTUP_SOUND_URL = 'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tAwAAA8AAAaQAAAAgAAA0gAAABExBTRTMuOTkuNVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQ==';
+const BACKGROUND_SOUND_URL = 'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tAwAAA8AAAaQAAAAgAAA0gAAABExBTRTMuOTkuNVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVQ==';
 
 // Use local storage key for sound settings
 const SOUND_ENABLED_KEY = 'ma-almanshuriyah-sound-enabled';
@@ -23,22 +24,53 @@ try {
   console.warn('Could not access localStorage for sound preferences');
 }
 
-// Helper function to play audio with proper cleanup
+// Kumpulan audio yang sudah dipreload
+const audioElements: {[key: string]: HTMLAudioElement} = {};
+
+// Helper function untuk memuat dan memainkan audio
 const playAudio = (url: string, volume = 0.5, loop = false): HTMLAudioElement => {
-  const audio = new Audio(url);
-  audio.volume = volume;
-  audio.loop = loop;
-  
-  const playPromise = audio.play();
-  
-  // Handle promise rejection for browsers that restrict autoplay
-  if (playPromise !== undefined) {
-    playPromise.catch(error => {
-      console.warn("Audio playback error:", error);
-    });
+  // Gunakan audio yang sudah dimuat jika tersedia
+  if (!audioElements[url]) {
+    const audio = new Audio();
+    audio.src = url;
+    audio.volume = volume;
+    audio.loop = loop;
+    audio.preload = 'auto';
+    
+    // Tambahkan ke kumpulan audio
+    audioElements[url] = audio;
+    
+    // Preload audio secara manual
+    audio.load();
+  } else {
+    // Update volume dan loop jika sudah ada
+    audioElements[url].volume = volume;
+    audioElements[url].loop = loop;
+    
+    // Reset posisi audio jika sedang dimainkan
+    if (!audioElements[url].paused) {
+      audioElements[url].currentTime = 0;
+    }
   }
   
-  return audio;
+  // Main audio dengan penanganan error
+  try {
+    const playPromise = audioElements[url].play();
+    if (playPromise !== undefined) {
+      playPromise.catch(error => {
+        console.warn("Audio playback error:", error);
+        // Coba sekali lagi dengan interaksi pengguna
+        document.addEventListener('click', function audioPlayOnClick() {
+          audioElements[url].play().catch(e => console.warn("Retry audio error:", e));
+          document.removeEventListener('click', audioPlayOnClick);
+        }, { once: true });
+      });
+    }
+  } catch (e) {
+    console.warn("Audio play error:", e);
+  }
+  
+  return audioElements[url];
 };
 
 export const useSoundEffects = () => {

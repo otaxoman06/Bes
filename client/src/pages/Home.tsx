@@ -125,6 +125,27 @@ export default function Home() {
           {/* Background Overlay untuk efek hologram */}
           <div className="fixed inset-0 bg-gradient-to-br from-blue-900/5 to-cyan-900/5 z-[-1]"></div>
           
+          {/* Futuristic background elements */}
+          <div className="fixed top-20 left-20 w-40 h-40 border border-dashed border-blue-500/20 rounded-full animate-spin-slow opacity-30 z-[-1]"></div>
+          <div className="fixed bottom-20 right-20 w-60 h-60 border border-dashed border-cyan-500/20 rounded-full animate-spin-reverse opacity-20 z-[-1]"></div>
+          <div className="fixed top-1/4 right-1/4 w-20 h-20 border border-dotted border-blue-400/20 rounded-full animate-spin-medium opacity-40 z-[-1]"></div>
+          <div className="fixed bottom-1/3 left-1/3 w-32 h-32 border border-dotted border-cyan-400/20 rounded-full animate-spin-reverse opacity-30 z-[-1]"></div>
+          
+          {/* Tech grid background */}
+          <div className="fixed inset-0 bg-tech-grid opacity-20 z-[-1]"></div>
+          
+          {/* Animated scanning line */}
+          <div className="fixed inset-x-0 h-px bg-blue-500/40 z-[-1] animate-scanning-line" 
+            style={{boxShadow: '0 0 8px rgba(0, 150, 255, 0.5)'}}></div>
+          
+          {/* Glowing points */}
+          <div className="fixed top-1/4 left-1/4 w-2 h-2 rounded-full bg-blue-500/60 animate-pulse-slow z-[-1]"
+            style={{boxShadow: '0 0 12px rgba(0, 136, 255, 0.8)'}}></div>
+          <div className="fixed bottom-1/3 right-1/3 w-2 h-2 rounded-full bg-cyan-500/60 animate-pulse-fast z-[-1]"
+            style={{boxShadow: '0 0 15px rgba(0, 200, 255, 0.8)'}}></div>
+          <div className="fixed top-2/3 right-1/4 w-2 h-2 rounded-full bg-blue-500/60 animate-pulse z-[-1]"
+            style={{boxShadow: '0 0 15px rgba(0, 136, 255, 0.8)'}}></div>
+          
           {/* Header Section */}
           <header className="relative z-10 pt-8 pb-4">
             <div className="container mx-auto px-4">

@@ -115,6 +115,11 @@ export default {
           "0%, 100%": { opacity: "1", transform: "scale(1)" },
           "50%": { opacity: "0.7", transform: "scale(0.98)" },
         },
+        "pulse": {
+          "0%": { opacity: "0.7", transform: "scale(0.95)" },
+          "50%": { opacity: "1", transform: "scale(1.05)" },
+          "100%": { opacity: "0.7", transform: "scale(0.95)" },
+        },
         "float": {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-10px)" },
@@ -134,6 +139,24 @@ export default {
           "50%": {
             boxShadow: "0 0 30px rgba(0, 136, 255, 0.9), 0 0 50px rgba(0, 136, 255, 0.7), 0 0 70px rgba(0, 136, 255, 0.5)"
           },
+        },
+        "ironman-pulse": {
+          "0%": { 
+            boxShadow: "0 0 15px rgba(0, 150, 255, 0.7), 0 0 30px rgba(0, 100, 255, 0.5) inset",
+            filter: "brightness(0.9)"
+          },
+          "50%": { 
+            boxShadow: "0 0 35px rgba(50, 180, 255, 0.9), 0 0 60px rgba(50, 150, 255, 0.7) inset",
+            filter: "brightness(1.2)"
+          },
+          "100%": { 
+            boxShadow: "0 0 15px rgba(0, 150, 255, 0.7), 0 0 30px rgba(0, 100, 255, 0.5) inset",
+            filter: "brightness(0.9)"
+          },
+        },
+        "scanning-line": {
+          "0%": { transform: "translateY(-100%)" },
+          "100%": { transform: "translateY(100%)" },
         },
         "fadeInUp": {
           "0%": { opacity: "0", transform: "translateY(20px)" },
@@ -158,6 +181,11 @@ export default {
           "0%": { transform: "translateY(0)" },
           "100%": { transform: "translateY(-100%)" },
         },
+        "particle-float": {
+          "0%": { transform: "translateY(0) scale(1) rotate(0deg)", opacity: "0.8" },
+          "50%": { transform: "translateY(-10px) scale(1.1) rotate(5deg)", opacity: "1" },
+          "100%": { transform: "translateY(0) scale(1) rotate(0deg)", opacity: "0.8" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -171,14 +199,18 @@ export default {
         "spin-medium-fast": "spin-medium-fast 4s linear infinite",
         "pulse-slow": "pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "pulse-fast": "pulse-fast 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "pulse": "pulse 3s ease-in-out infinite",
         "float": "float 3s ease-in-out infinite",
         "glow": "glow 2s ease-in-out infinite",
         "glow-strong": "glow-strong 1.5s ease-in-out infinite",
+        "ironman-pulse": "ironman-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "scanning-line": "scanning-line 2.5s ease-in-out infinite alternate",
         "fadeInUp": "fadeInUp 0.6s ease-out",
         "fadeInRight": "fadeInRight 0.3s ease-out",
         "hologram-scan": "hologram-scan 2s ease-in-out infinite alternate",
         "data-flicker": "data-flicker 4s ease-in-out infinite",
         "data-scroll": "data-scroll 10s linear infinite",
+        "particle-float": "particle-float 3s ease-in-out infinite",
       },
     },
   },

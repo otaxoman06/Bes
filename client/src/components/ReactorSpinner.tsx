@@ -134,14 +134,44 @@ const ReactorSpinner = () => {
         
         {/* Core reactor with glowing effect */}
         <div className="absolute inset-20 rounded-full bg-black overflow-hidden flex items-center justify-center">
-          <div 
-            className="absolute inset-2 rounded-full reactor-core animate-pulse-fast"
-            style={{ 
-              filter: `blur(1px) brightness(${1 + energy/100})`,
-              boxShadow: `0 0 ${10 + energy/5}px rgba(0, 150, 255, 0.8), 
-                          0 0 ${20 + energy/3}px rgba(0, 200, 255, 0.6)`
-            }}
-          />
+          {/* Advanced reactor core with multiple layers for Ironman effect */}
+          <div className="absolute inset-2 rounded-full overflow-hidden">
+            {/* Inner core glow */}
+            <div 
+              className="absolute inset-0 rounded-full reactor-core animate-pulse-fast"
+              style={{ 
+                filter: `blur(1px) brightness(${1 + energy/80})`,
+                boxShadow: `0 0 ${10 + energy/5}px rgba(0, 150, 255, 0.8), 
+                            0 0 ${20 + energy/3}px rgba(0, 200, 255, 0.6),
+                            0 0 ${30 + energy/2}px rgba(0, 100, 255, 0.4) inset`
+              }}
+            />
+            
+            {/* Plasma effect */}
+            <div className="absolute inset-0 opacity-60">
+              <div className="absolute inset-0 bg-blue-500 mix-blend-screen animate-pulse-slow" 
+                style={{filter: `blur(8px) brightness(${1 + energy/100})`}} />
+            </div>
+            
+            {/* Central bright spot */}
+            <div 
+              className="absolute rounded-full w-8 h-8 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-pulse-fast"
+              style={{
+                background: 'radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(100,200,255,0.6) 40%, transparent 70%)',
+                boxShadow: '0 0 15px rgba(255, 255, 255, 0.8)',
+                filter: `blur(1px) brightness(${1 + energy/70})`
+              }}
+            />
+            
+            {/* Energy wave effect */}
+            <div 
+              className="absolute w-full h-full top-0 left-0"
+              style={{
+                background: `radial-gradient(circle, rgba(50,150,255,0.1) ${30 + energy/5}%, rgba(0,100,255,0.3) ${50 + energy/4}%, rgba(0,50,200,0.2) ${70 + energy/3}%, transparent 100%)`,
+                animation: 'pulse 3s ease-in-out infinite'
+              }}
+            />
+          </div>
           
           {/* Energy level indicator bar */}
           <div className="absolute top-2/3 left-0 right-0 h-1 bg-gray-800 z-20 mx-4">

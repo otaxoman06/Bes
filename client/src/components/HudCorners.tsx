@@ -1,11 +1,23 @@
 import { useState, useEffect } from 'react';
 
+interface CoordinatePoint {
+  x: string;
+  y: string;
+}
+
+interface CornerData {
+  topLeft: CoordinatePoint;
+  topRight: CoordinatePoint;
+  bottomLeft: CoordinatePoint;
+  bottomRight: CoordinatePoint;
+}
+
 const HudCorners = () => {
-  const [cornerData, setCornerData] = useState({
-    topLeft: { x: 0, y: 0 },
-    topRight: { x: 100, y: 0 },
-    bottomLeft: { x: 0, y: 100 },
-    bottomRight: { x: 100, y: 100 }
+  const [cornerData, setCornerData] = useState<CornerData>({
+    topLeft: { x: "0", y: "0" },
+    topRight: { x: "100", y: "0" },
+    bottomLeft: { x: "0", y: "100" },
+    bottomRight: { x: "100", y: "100" }
   });
   
   // Animasi koordinat sudut
