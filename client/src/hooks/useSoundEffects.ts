@@ -2,7 +2,37 @@
 import { useCallback, useState, useEffect, useRef } from 'react';
 import { SOUNDS } from '@/assets/sounds';
 
+// Konstanta untuk key di localStorage
 const SOUND_ENABLED_KEY = 'ma-almanshuriyah-sound-enabled';
+
+// Synthethic Audio Context (untuk efek suara sintetis)
+let audioContext: AudioContext | null = null;
+
+// Mencoba membuat beep sintetis sebagai fallback
+const createSyntheticBeep = (frequency = 440, duration = 100, volume = 0.3) => {
+  try {
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+    
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+    gainNode.gain.linearRampToValueAtTime(volume, audioContext.currentTime + 0.01);
+    gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + (duration / 1000));
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.start();
+    oscillator.stop(audioContext.currentTime + (duration / 1000));
+  } catch (e) {
+    // Abaikan error - audio adalah fitur opsional
+  }
+};
 
 export const useSoundEffects = () => {
   const [soundEnabled, setSoundEnabled] = useState(() => {
@@ -14,56 +44,60 @@ export const useSoundEffects = () => {
     }
   });
 
+  // Referensi untuk semua audio yang dipreload
   const audioRefs = useRef<{ [key: string]: HTMLAudioElement }>({});
+  
+  // Menandai apakah audio availability sudah dicek
+  const audioChecked = useRef<boolean>(false);
 
-  // Initialize audio elements
+  // Efek untuk memuat audio saat komponen mount
   useEffect(() => {
-    const preloadAudio = async () => {
-      const audioPromises = Object.entries(SOUNDS).map(async ([key, url]) => {
+    // Daripada asynchronous load yang dapat gagal, kita langsung buat audio elements
+    Object.entries(SOUNDS).forEach(([key, url]) => {
+      try {
         const audio = new Audio();
         audio.preload = 'auto';
-        
-        // Create load promise
-        const loadPromise = new Promise((resolve, reject) => {
-          audio.oncanplaythrough = resolve;
-          audio.onerror = reject;
-        });
-        
-        // Set source and wait for load
         audio.src = url;
-        try {
-          await loadPromise;
-          audioRefs.current[key] = audio;
-        } catch (err) {
-          console.warn(`Failed to load audio ${key}:`, err);
-        }
-      });
-      
-      await Promise.all(audioPromises);
-    };
+        
+        // Error handler
+        audio.onerror = () => {
+          console.warn(`Failed to load audio ${key}`);
+        };
+        
+        // Simpan referensi
+        audioRefs.current[key] = audio;
+      } catch (err) {
+        console.warn(`Failed to create audio ${key}:`, err);
+      }
+    });
     
-    preloadAudio();
-
+    // Cleanup saat component unmount
     return () => {
-      // Cleanup audio elements
       Object.values(audioRefs.current).forEach(audio => {
-        audio.pause();
-        audio.src = '';
+        try {
+          audio.pause();
+          audio.src = '';
+        } catch (e) {
+          // Abaikan error
+        }
       });
     };
   }, []);
 
+  // Menyimpan preferensi ke localStorage
   useEffect(() => {
     try {
       localStorage.setItem(SOUND_ENABLED_KEY, soundEnabled.toString());
     } catch (e) {
-      console.warn('Could not save sound preference:', e);
+      // Abaikan error
     }
   }, [soundEnabled]);
 
-  const playSound = useCallback((soundKey: string, volume = 0.5) => {
+  // Function untuk memainkan suara
+  const playSound = useCallback((soundKey: string, volume = 0.5, frequency = 440) => {
     if (!soundEnabled) return;
 
+    // Pertama coba gunakan Audio APIs standard
     const audio = audioRefs.current[soundKey];
     if (audio) {
       try {
@@ -72,54 +106,89 @@ export const useSoundEffects = () => {
         audio.volume = volume;
         audio.currentTime = 0;
         
-        // Play with user interaction handling
+        // Coba mainkan audio
         const playPromise = audio.play();
         if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              // Playback started successfully
-            })
-            .catch(error => {
-              // Auto-play was prevented
-              if (error.name === 'NotAllowedError') {
-                console.info('Audio playback requires user interaction first');
-              } else {
-                console.warn('Audio playback error:', error.message);
-              }
-            });
+          playPromise.catch(() => {
+            // Jika gagal, gunakan synthetic beep
+            if (soundKey === 'hover') createSyntheticBeep(frequency, 50, volume);
+            else if (soundKey === 'click') createSyntheticBeep(frequency * 1.2, 80, volume);
+            else if (soundKey === 'startup') createSyntheticBeep(frequency * 1.5, 120, volume);
+          });
         }
+        return;
       } catch (error) {
-        console.warn('Audio system error:', error);
+        // Jika error, fallback ke synthetic
       }
     }
+    
+    // Fallback untuk synthetic audio
+    if (soundKey === 'hover') createSyntheticBeep(frequency, 50, volume);
+    else if (soundKey === 'click') createSyntheticBeep(frequency * 1.2, 80, volume);
+    else if (soundKey === 'startup') createSyntheticBeep(frequency * 1.5, 120, volume);
+    
   }, [soundEnabled]);
 
+  // Berbagai fungsi untuk memainkan suara
   const playHoverSound = useCallback(() => {
-    playSound('hover', 0.2);
+    playSound('hover', 0.2, 600);
   }, [playSound]);
 
   const playClickSound = useCallback(() => {
-    playSound('click', 0.3);
+    playSound('click', 0.3, 800);
   }, [playSound]);
 
   const playStartupSound = useCallback(() => {
-    playSound('startup', 0.4);
+    playSound('startup', 0.4, 440);
   }, [playSound]);
 
+  // Background sound memerlukan perlakuan khusus
   const playBackgroundSound = useCallback(() => {
-    const audio = audioRefs.current['background'];
-    if (audio && soundEnabled) {
-      audio.volume = 0.1;
-      audio.loop = true;
-      audio.play().catch(console.warn);
+    if (!soundEnabled) return;
+    
+    // Coba buat ambient sound dengan oscillator
+    try {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      }
+      
+      // Create subtle ambient sound with periodic oscillator
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(100, audioContext.currentTime);
+      gainNode.gain.setValueAtTime(0.03, audioContext.currentTime);
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.start();
+      
+      // Store oscillator node reference for cleanup
+      const cleanup = () => {
+        oscillator.stop();
+        oscillator.disconnect();
+        gainNode.disconnect();
+      };
+      
+      // Set timeout to avoid infinite sound
+      setTimeout(cleanup, 2000);
+    } catch (e) {
+      // Abaikan error
     }
+    
   }, [soundEnabled]);
 
   const stopBackgroundSound = useCallback(() => {
     const audio = audioRefs.current['background'];
     if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
+      try {
+        audio.pause();
+        audio.currentTime = 0;
+      } catch (e) {
+        // Abaikan error
+      }
     }
   }, []);
 
@@ -131,6 +200,9 @@ export const useSoundEffects = () => {
       }
       return newState;
     });
+    
+    // Mainkan beep sintetis untuk feedback
+    createSyntheticBeep(440, 80, 0.2);
   }, [stopBackgroundSound]);
 
   const isSoundEnabled = useCallback(() => {
