@@ -1,10 +1,10 @@
 import { useCallback, useRef, useEffect } from 'react';
 
-// Sound URLs
-const HOVER_SOUND_URL = 'https://www.soundjay.com/buttons/sounds/button-35.mp3';
-const CLICK_SOUND_URL = 'https://www.soundjay.com/buttons/sounds/button-21.mp3';
-const STARTUP_SOUND_URL = 'https://www.soundjay.com/mechanical/sounds/machine-start-up-03.mp3';
-const BACKGROUND_SOUND_URL = 'https://www.soundjay.com/ambient/sounds/ambient-5.mp3';
+// Sound URLs - menggunakan CDN lain yang lebih reliable
+const HOVER_SOUND_URL = 'https://assets.mixkit.co/sfx/preview/mixkit-interface-click-tone-2568.mp3';
+const CLICK_SOUND_URL = 'https://assets.mixkit.co/sfx/preview/mixkit-game-click-1114.mp3';
+const STARTUP_SOUND_URL = 'https://assets.mixkit.co/sfx/preview/mixkit-tech-break-ui-deploy-2574.mp3';
+const BACKGROUND_SOUND_URL = 'https://assets.mixkit.co/sfx/preview/mixkit-futuristic-technology-ambience-2516.mp3';
 
 // Use local storage key for sound settings
 const SOUND_ENABLED_KEY = 'ma-almanshuriyah-sound-enabled';

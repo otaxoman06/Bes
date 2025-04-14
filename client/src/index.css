@@ -8,6 +8,172 @@
   }
 
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased bg-gray-900 text-foreground;
+    background-image: 
+      radial-gradient(circle at 10% 10%, rgba(0, 30, 60, 0.25) 0%, transparent 70%),
+      radial-gradient(circle at 90% 90%, rgba(0, 50, 100, 0.25) 0%, transparent 70%),
+      linear-gradient(135deg, rgba(0, 0, 20, 0.9) 0%, rgba(0, 10, 40, 0.9) 100%);
+    overflow-x: hidden;
   }
+}
+
+@layer components {
+  .display-panel {
+    @apply bg-gray-900/70 border border-blue-500/30 backdrop-blur-sm;
+    box-shadow: 0 0 10px rgba(0, 136, 255, 0.2) inset, 0 0 5px rgba(0, 136, 255, 0.1);
+  }
+
+  .hud-element {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background: rgba(5, 20, 45, 0.7);
+    border: 1px solid rgba(0, 150, 255, 0.3);
+    box-shadow: 0 0 10px rgba(0, 136, 255, 0.2) inset;
+    backdrop-filter: blur(4px);
+  }
+
+  .hud-element::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 136, 255, 0.5), transparent);
+  }
+
+  .hud-element-glow {
+    background: radial-gradient(circle, rgba(0, 136, 255, 0.2) 0%, transparent 70%);
+  }
+
+  .reactor-ring {
+    border: 2px dashed rgba(0, 136, 255, 0.5);
+    box-shadow: 0 0 15px rgba(0, 136, 255, 0.3);
+  }
+
+  .reactor-ring-inner {
+    border: 2px solid rgba(0, 200, 255, 0.5);
+    box-shadow: 0 0 10px rgba(0, 200, 255, 0.3) inset, 0 0 15px rgba(0, 136, 255, 0.3);
+  }
+
+  .reactor-ring-core {
+    border: 3px dotted rgba(0, 170, 255, 0.5);
+    box-shadow: 0 0 10px rgba(0, 170, 255, 0.3) inset;
+  }
+
+  .reactor-core {
+    background: radial-gradient(circle, rgba(0, 200, 255, 0.8) 0%, rgba(0, 100, 255, 0.5) 60%, rgba(0, 50, 255, 0.3) 100%);
+    box-shadow: 0 0 20px rgba(0, 100, 255, 0.6), 0 0 40px rgba(0, 150, 255, 0.4) inset;
+  }
+
+  .reactor-particle {
+    position: absolute;
+    background-color: rgba(0, 200, 255, 0.8);
+    border-radius: 50%;
+    box-shadow: 0 0 5px rgba(0, 200, 255, 0.8);
+    transform: translate(-50%, -50%);
+  }
+
+  .hologram-scanline {
+    opacity: 0.3;
+    background: linear-gradient(transparent, rgba(0, 200, 255, 0.5), transparent);
+    height: 10px;
+    width: 100%;
+    position: absolute;
+    animation: hologram-scan 2s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+
+  .measurement-lines-outer {
+    border: 1px dashed rgba(0, 150, 255, 0.3);
+    pointer-events: none;
+  }
+
+  .energy-ring {
+    border: 1px solid rgba(0, 130, 255, 0.3);
+    pointer-events: none;
+  }
+
+  .energy-indicator {
+    transform-origin: bottom center;
+    border-radius: 1px;
+  }
+
+  .scanline {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: rgba(0, 200, 255, 0.2);
+    box-shadow: 0 0 10px rgba(0, 150, 255, 0.8);
+    opacity: 0.7;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .audio-visualizer {
+    display: flex;
+    align-items: flex-end;
+    height: 20px;
+    gap: 2px;
+  }
+
+  .audio-bar {
+    width: 2px;
+    min-height: 2px;
+    background-color: #0088FF;
+    border-radius: 1px;
+    box-shadow: 0 0 5px rgba(0, 136, 255, 0.5);
+  }
+
+  /* Background futuristic elements */
+  .bg-tech-grid {
+    background-image: 
+      linear-gradient(rgba(0, 136, 255, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 136, 255, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: center center;
+  }
+
+  .data-stream {
+    position: fixed;
+    font-family: monospace;
+    color: rgba(0, 136, 255, 0.4);
+    font-size: 10px;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: -1;
+    line-height: 0.8;
+    text-shadow: 0 0 2px rgba(0, 136, 255, 0.3);
+    animation: data-scroll 10s linear infinite, data-flicker 4s ease-in-out infinite;
+  }
+
+  .tech-circle {
+    position: fixed;
+    border: 1px dashed rgba(0, 136, 255, 0.2);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -1;
+  }
+}
+
+.text-neon-blue {
+  color: #0088FF;
+  text-shadow: 0 0 5px rgba(0, 136, 255, 0.5);
+}
+
+.text-cyber-cyan {
+  color: #00ddff;
+  text-shadow: 0 0 5px rgba(0, 200, 255, 0.5);
+}
+
+/* Fonts */
+.font-orbitron {
+  font-family: 'Orbitron', sans-serif;
+}
+
+.font-rajdhani {
+  font-family: 'Rajdhani', sans-serif;
 }
