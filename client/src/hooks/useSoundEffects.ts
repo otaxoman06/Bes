@@ -18,11 +18,31 @@ export const useSoundEffects = () => {
 
   // Initialize audio elements
   useEffect(() => {
-    Object.entries(SOUNDS).forEach(([key, url]) => {
-      const audio = new Audio(url);
-      audio.preload = 'auto';
-      audioRefs.current[key] = audio;
-    });
+    const preloadAudio = async () => {
+      const audioPromises = Object.entries(SOUNDS).map(async ([key, url]) => {
+        const audio = new Audio();
+        audio.preload = 'auto';
+        
+        // Create load promise
+        const loadPromise = new Promise((resolve, reject) => {
+          audio.oncanplaythrough = resolve;
+          audio.onerror = reject;
+        });
+        
+        // Set source and wait for load
+        audio.src = url;
+        try {
+          await loadPromise;
+          audioRefs.current[key] = audio;
+        } catch (err) {
+          console.warn(`Failed to load audio ${key}:`, err);
+        }
+      });
+      
+      await Promise.all(audioPromises);
+    };
+    
+    preloadAudio();
 
     return () => {
       // Cleanup audio elements
@@ -47,13 +67,29 @@ export const useSoundEffects = () => {
     const audio = audioRefs.current[soundKey];
     if (audio) {
       try {
+        // Reset audio state
+        audio.pause();
         audio.volume = volume;
         audio.currentTime = 0;
-        audio.play().catch(error => {
-          console.warn('Audio playback error:', error);
-        });
+        
+        // Play with user interaction handling
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise
+            .then(() => {
+              // Playback started successfully
+            })
+            .catch(error => {
+              // Auto-play was prevented
+              if (error.name === 'NotAllowedError') {
+                console.info('Audio playback requires user interaction first');
+              } else {
+                console.warn('Audio playback error:', error.message);
+              }
+            });
+        }
       } catch (error) {
-        console.warn('Audio playback error:', error);
+        console.warn('Audio system error:', error);
       }
     }
   }, [soundEnabled]);
