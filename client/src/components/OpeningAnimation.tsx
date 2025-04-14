@@ -1,10 +1,13 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
 import { maLogo } from "@/assets/logos";
 
 const OpeningAnimation = () => {
   const [progress, setProgress] = useState(0);
   const [loadingStage, setLoadingStage] = useState(0);
+  const [opacity, setOpacity] = useState(0);
+  const [yOffset, setYOffset] = useState(-20);
+  const progressBarRef = useRef<HTMLDivElement>(null);
+  const messageRef = useRef<HTMLDivElement>(null);
   
   const loadingStages = [
     'Memuat sistem inti...',
@@ -15,6 +18,18 @@ const OpeningAnimation = () => {
     'Sistem siap!'
   ];
 
+  // Initialize animation
+  useEffect(() => {
+    // Animate logo entry
+    const fadeInTimer = setTimeout(() => {
+      setOpacity(1);
+      setYOffset(0);
+    }, 100);
+    
+    return () => clearTimeout(fadeInTimer);
+  }, []);
+
+  // Progress bar animation
   useEffect(() => {
     const interval = setInterval(() => {
       setProgress(prev => {
@@ -26,7 +41,25 @@ const OpeningAnimation = () => {
           Math.floor(newProgress / (100 / loadingStages.length)),
           loadingStages.length - 1
         );
-        setLoadingStage(stageIndex);
+        
+        if (stageIndex !== loadingStage) {
+          setLoadingStage(stageIndex);
+          
+          // Reset and animate the message element
+          if (messageRef.current) {
+            messageRef.current.style.opacity = "0";
+            setTimeout(() => {
+              if (messageRef.current) {
+                messageRef.current.style.opacity = "1";
+              }
+            }, 200);
+          }
+        }
+        
+        // Update progress bar width
+        if (progressBarRef.current) {
+          progressBarRef.current.style.width = `${newProgress}%`;
+        }
         
         if (newProgress >= 100) {
           clearInterval(interval);
@@ -37,15 +70,16 @@ const OpeningAnimation = () => {
     }, 200);
     
     return () => clearInterval(interval);
-  }, []);
+  }, [loadingStage]);
 
   return (
     <div className="fixed inset-0 bg-dark-bg flex flex-col items-center justify-center z-50">
-      <motion.div 
-        className="mb-8"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <div 
+        className="mb-8 transition-all duration-500"
+        style={{
+          opacity,
+          transform: `translateY(${yOffset}px)`,
+        }}
       >
         <img 
           src={maLogo} 
@@ -55,26 +89,22 @@ const OpeningAnimation = () => {
         <div className="boot-up-text font-orbitron text-neon-blue text-lg">
           SISTEM INISIALISASI... 
         </div>
-      </motion.div>
+      </div>
       
       <div className="w-64 h-2 bg-panel-bg rounded-full relative overflow-hidden">
-        <motion.div 
-          className="h-full bg-neon-blue rounded-full"
-          initial={{ width: 0 }}
-          animate={{ width: `${progress}%` }}
-          transition={{ duration: 0.3 }}
+        <div 
+          ref={progressBarRef}
+          className="h-full bg-neon-blue rounded-full transition-all duration-300"
+          style={{ width: `${progress}%` }}
         />
       </div>
       
-      <motion.div 
-        className="mt-2 text-sm text-cyan-400"
-        key={loadingStage}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.2 }}
+      <div 
+        ref={messageRef}
+        className="mt-2 text-sm text-cyan-400 transition-opacity duration-200"
       >
         {loadingStages[loadingStage]}
-      </motion.div>
+      </div>
     </div>
   );
 };
