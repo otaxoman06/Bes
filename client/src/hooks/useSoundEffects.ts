@@ -1,17 +1,9 @@
-import { useCallback, useState, useEffect } from 'react';
 
-// Konstanta untuk URL Audio - untuk saat ini kita gunakan empty sounds untuk menghindari error
-const HOVER_SOUND = 'hover';
-const CLICK_SOUND = 'click';
-const STARTUP_SOUND = 'startup';
-const BACKGROUND_SOUND = 'background';
+import { useCallback, useState, useEffect, useRef } from 'react';
+import { SOUNDS } from '@/assets/sounds';
 
-// Kunci untuk preferensi suara di localStorage
 const SOUND_ENABLED_KEY = 'ma-almanshuriyah-sound-enabled';
 
-/**
- * Hook untuk mengelola efek suara pada aplikasi
- */
 export const useSoundEffects = () => {
   const [soundEnabled, setSoundEnabled] = useState(() => {
     try {
@@ -21,8 +13,26 @@ export const useSoundEffects = () => {
       return true;
     }
   });
-  
-  // Simpan nilai soundEnabled ke localStorage ketika berubah
+
+  const audioRefs = useRef<{ [key: string]: HTMLAudioElement }>({});
+
+  // Initialize audio elements
+  useEffect(() => {
+    Object.entries(SOUNDS).forEach(([key, url]) => {
+      const audio = new Audio(url);
+      audio.preload = 'auto';
+      audioRefs.current[key] = audio;
+    });
+
+    return () => {
+      // Cleanup audio elements
+      Object.values(audioRefs.current).forEach(audio => {
+        audio.pause();
+        audio.src = '';
+      });
+    };
+  }, []);
+
   useEffect(() => {
     try {
       localStorage.setItem(SOUND_ENABLED_KEY, soundEnabled.toString());
@@ -30,49 +40,67 @@ export const useSoundEffects = () => {
       console.warn('Could not save sound preference:', e);
     }
   }, [soundEnabled]);
-  
-  // Fungsi dummy untuk "memainkan" suara - karena terbatas oleh browser policy
-  const playSound = useCallback((sound: string, volume = 0.5) => {
+
+  const playSound = useCallback((soundKey: string, volume = 0.5) => {
     if (!soundEnabled) return;
-    
-    // Logging untuk development
-    console.log(`Playing ${sound} sound at volume ${volume}`);
-    
-    // Di sini akan ditambahkan kode untuk memainkan suara
-    // jika berada di environment produksi
+
+    const audio = audioRefs.current[soundKey];
+    if (audio) {
+      try {
+        audio.volume = volume;
+        audio.currentTime = 0;
+        audio.play().catch(error => {
+          console.warn('Audio playback error:', error);
+        });
+      } catch (error) {
+        console.warn('Audio playback error:', error);
+      }
+    }
   }, [soundEnabled]);
-  
+
   const playHoverSound = useCallback(() => {
-    playSound(HOVER_SOUND, 0.2);
+    playSound('hover', 0.2);
   }, [playSound]);
-  
+
   const playClickSound = useCallback(() => {
-    playSound(CLICK_SOUND, 0.3);
+    playSound('click', 0.3);
   }, [playSound]);
-  
+
   const playStartupSound = useCallback(() => {
-    playSound(STARTUP_SOUND, 0.4);
+    playSound('startup', 0.4);
   }, [playSound]);
-  
+
   const playBackgroundSound = useCallback(() => {
-    playSound(BACKGROUND_SOUND, 0.1);
-  }, [playSound]);
-  
+    const audio = audioRefs.current['background'];
+    if (audio && soundEnabled) {
+      audio.volume = 0.1;
+      audio.loop = true;
+      audio.play().catch(console.warn);
+    }
+  }, [soundEnabled]);
+
   const stopBackgroundSound = useCallback(() => {
-    // Do nothing for now, just a placeholder
-    console.log('Background sound stopped');
+    const audio = audioRefs.current['background'];
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
   }, []);
-  
+
   const toggleSounds = useCallback(() => {
-    setSoundEnabled(prev => !prev);
-    // Always play a 'click' for feedback even if sounds are being turned off
-    playSound(CLICK_SOUND, 0.3);
-  }, [playSound]);
-  
+    setSoundEnabled(prev => {
+      const newState = !prev;
+      if (!newState) {
+        stopBackgroundSound();
+      }
+      return newState;
+    });
+  }, [stopBackgroundSound]);
+
   const isSoundEnabled = useCallback(() => {
     return soundEnabled;
   }, [soundEnabled]);
-  
+
   return {
     playHoverSound,
     playClickSound,

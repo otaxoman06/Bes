@@ -1,7 +1,7 @@
-// Sound file information (using public URLs since we can't include binary files)
+
 export const SOUNDS = {
-  hover: 'https://www.soundjay.com/buttons/sounds/button-35.mp3',
-  click: 'https://www.soundjay.com/buttons/sounds/button-21.mp3',
-  startup: 'https://www.soundjay.com/mechanical/sounds/machine-start-up-03.mp3',
-  background: 'https://www.soundjay.com/ambient/sounds/ambient-5.mp3'
+  hover: 'https://cdn.freesound.org/previews/703/703346_14346535-lq.mp3',
+  click: 'https://cdn.freesound.org/previews/703/703345_14346535-lq.mp3',
+  startup: 'https://cdn.freesound.org/previews/244/244982_4548033-lq.mp3',
+  background: 'https://cdn.freesound.org/previews/405/405548_5121236-lq.mp3'
 };
