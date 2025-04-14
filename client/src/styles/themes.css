@@ -1,0 +1,150 @@
+/* Base theme variables */
+:root {
+  /* Default values - will be overridden by specific themes */
+  --primary-color: #0088FF;
+  --primary-glow: rgba(0, 136, 255, 0.5);
+  --secondary-color: #FF3D00;
+  --secondary-glow: rgba(255, 61, 0, 0.5);
+  --background-dark: #121212;
+  --background-light: #1E1E1E;
+  --text-color: #FFFFFF;
+  --border-color: rgba(0, 136, 255, 0.5);
+  --scan-color: rgba(0, 136, 255, 0.5);
+  
+  /* Animation types */
+  --theme-animation-name: ironman-pulse;
+  --theme-animation-duration: 3s;
+}
+
+/* Iron Tech Theme - Default */
+.theme-ironman {
+  --primary-color: #0088FF;
+  --primary-glow: rgba(0, 136, 255, 0.5);
+  --secondary-color: #FF3D00;
+  --secondary-glow: rgba(255, 61, 0, 0.5);
+  --background-dark: #0D1117;
+  --background-light: #161B22;
+  --text-color: #FFFFFF;
+  --border-color: rgba(0, 136, 255, 0.5);
+  --scan-color: rgba(0, 136, 255, 0.5);
+  
+  --theme-animation-name: ironman-pulse;
+  --theme-animation-duration: 3s;
+}
+
+/* Cyberpunk Theme */
+.theme-cyberpunk {
+  --primary-color: #FF00FF;
+  --primary-glow: rgba(255, 0, 255, 0.5);
+  --secondary-color: #00FFFF;
+  --secondary-glow: rgba(0, 255, 255, 0.5);
+  --background-dark: #0D0032;
+  --background-light: #1A0056;
+  --text-color: #FFFF00;
+  --border-color: rgba(255, 0, 255, 0.5);
+  --scan-color: rgba(0, 255, 255, 0.5);
+  
+  --theme-animation-name: cyberpunk-glitch;
+  --theme-animation-duration: 3s;
+}
+
+/* Hologram Theme */
+.theme-hologram {
+  --primary-color: #00FFFF;
+  --primary-glow: rgba(0, 255, 255, 0.5);
+  --secondary-color: #00FF80;
+  --secondary-glow: rgba(0, 255, 128, 0.5);
+  --background-dark: #002930;
+  --background-light: #003E46;
+  --text-color: #7AFFFD;
+  --border-color: rgba(0, 255, 255, 0.5);
+  --scan-color: rgba(0, 255, 255, 0.3);
+  
+  --theme-animation-name: hologram-flicker;
+  --theme-animation-duration: 5s;
+}
+
+/* Matrix Theme */
+.theme-matrix {
+  --primary-color: #00FF00;
+  --primary-glow: rgba(0, 255, 0, 0.5);
+  --secondary-color: #CCFF00;
+  --secondary-glow: rgba(204, 255, 0, 0.5);
+  --background-dark: #000800;
+  --background-light: #001000;
+  --text-color: #00FF00;
+  --border-color: rgba(0, 255, 0, 0.5);
+  --scan-color: rgba(0, 255, 0, 0.3);
+  
+  --theme-animation-name: ironman-pulse;
+  --theme-animation-duration: 3s;
+}
+
+/* Theme-specific animations applied to elements */
+.theme-animated {
+  animation-name: var(--theme-animation-name);
+  animation-duration: var(--theme-animation-duration);
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
+/* Theme-specific text and border classes */
+.theme-text {
+  color: var(--primary-color);
+}
+
+.theme-border {
+  border-color: var(--primary-color);
+}
+
+.theme-glow {
+  box-shadow: 0 0 10px var(--primary-color);
+}
+
+.theme-background {
+  background-color: var(--background-dark);
+}
+
+/* Button styles */
+.theme-button {
+  background-color: var(--background-light);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  transition: all 0.3s ease;
+}
+
+.theme-button:hover {
+  background-color: var(--background-light);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 5px var(--primary-color);
+}
+
+.theme-active-button {
+  background-color: var(--background-light);
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+/* Scanline theming */
+.theme-scanline {
+  background: linear-gradient(to bottom, 
+    rgba(0, 0, 0, 0), 
+    var(--scan-color), 
+    rgba(0, 0, 0, 0));
+}
+
+/* Reactor core theming */
+.theme-reactor-core {
+  background: radial-gradient(circle, var(--secondary-glow) 0%, rgba(0, 0, 0, 0.1) 70%);
+  box-shadow: 
+    0 0 10px var(--secondary-color),
+    0 0 20px var(--secondary-glow),
+    0 0 30px rgba(255, 61, 0, 0.1);
+}
+
+.theme-reactor-ring {
+  border: 2px solid var(--secondary-color);
+  box-shadow: 
+    0 0 10px var(--primary-color),
+    inset 0 0 10px var(--primary-glow);
+}

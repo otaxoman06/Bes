@@ -27,17 +27,30 @@
 }
 
 @keyframes glow {
-  0%, 100% { box-shadow: 0 0 5px rgba(0, 136, 255, 0.5), 0 0 10px rgba(0, 136, 255, 0.3); }
-  50% { box-shadow: 0 0 20px rgba(0, 136, 255, 0.8), 0 0 30px rgba(0, 136, 255, 0.5); }
+  0%, 100% { box-shadow: 0 0 5px var(--primary-color), 0 0 10px var(--primary-color); }
+  50% { box-shadow: 0 0 20px var(--primary-color), 0 0 30px var(--primary-color); }
 }
 
-:root {
-  --neon-blue: #0088FF;
-  --reactor-orange: #FF3D00;
-  --cyber-cyan: #00FFFF;
-  --emerald: #50C878;
-  --dark-bg: #121212;
-  --panel-bg: #1E1E1E;
+/* Theme animations */
+@keyframes ironman-pulse {
+  0%, 100% { opacity: 0.8; filter: brightness(1); }
+  50% { opacity: 1; filter: brightness(1.5); }
+}
+
+@keyframes cyberpunk-glitch {
+  0%, 100% { transform: translate(0); }
+  10% { transform: translate(-5px, 5px); }
+  30% { transform: translate(3px, -3px); }
+  50% { transform: translate(0); }
+  70% { transform: translate(5px, 2px); }
+  90% { transform: translate(-2px, -2px); }
+}
+
+@keyframes hologram-flicker {
+  0%, 100% { opacity: 0.8; }
+  25% { opacity: 0.6; }
+  50% { opacity: 1; }
+  75% { opacity: 0.7; }
 }
 
 .font-orbitron {
