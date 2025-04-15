@@ -3,7 +3,7 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "functions": {
-    "server/**/*.ts": {
+    "api/**/*.js": {
       "memory": 1024
     }
   },
